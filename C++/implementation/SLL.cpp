@@ -2,18 +2,78 @@
 #include "C:\Users\blackrose\Desktop\Github\DataStructures\C++\header\SLL.h"
 using namespace std;
 
-template<typename T>
-SinglyLinkedList<T>::Node::Node() {data = next = nullptr;}
+// iterator
+template <typename T>
+SinglyLinkedList<T>::Iterator::Iterator() { current = nullptr; }
+
+template <typename T>
+SinglyLinkedList<T>::Iterator::Iterator(Node *node) { current = node; }
+
+template <typename T>
+SinglyLinkedList<T>::Iterator &SinglyLinkedList<T>::Iterator::operator=(const Iterator &other)
+{
+    current = other->current;
+    return *this;
+}
 
 template<typename T>
-SinglyLinkedList<T>::Node::Node(const T& value) {data = value; next = 0;}
+T& SinglyLinkedList<T>::Iterator::operator*() { return current->data; }
 
 template<typename T>
-SinglyLinkedList<T>::Node::Node(T&& value) {data = value; next = 0;}
+const T& SinglyLinkedList<T>::Iterator::operator*() const { return current->data; }
 
 template<typename T>
-template<typename... Args>
-SinglyLinkedList<T>::Node::Node(Args&&... args): data(std::forward<Args>(args)...),next(nullptr) {}
+const T* SinglyLinkedList<T>::Iterator::operator->() const { return &(current->data); }
+
+template<typename T>
+T* SinglyLinkedList<T>::Iterator::operator->() { return &(current->data); }
+
+template<typename T>
+SinglyLinkedList<T>::Iterator& SinglyLinkedList<T>::Iterator::operator++(){
+    current=current->next;
+    return *this;
+}
+
+template<typename T>
+SinglyLinkedList<T>::Iterator SinglyLinkedList<T>::Iterator::operator++(int) {
+    Iterator temp = *this;     // save old iterator
+    current = current->next;   // advance to next node
+    return temp;               // return old iterator (by value)
+}
+
+template<typename T>
+bool SinglyLinkedList<T>::Iterator::operator==(const SinglyLinkedList<T>::Iterator& other) const{
+    return (current == other->current);
+}
+
+template<typename T>
+bool SinglyLinkedList<T>::Iterator::operator!=(const SinglyLinkedList<T>::Iterator& other) const{
+    return (current != other->current);
+}
+// constructors
+
+
+
+template <typename T>
+SinglyLinkedList<T>::Node::Node() { data = next = nullptr; }
+
+template <typename T>
+SinglyLinkedList<T>::Node::Node(const T &value)
+{
+    data = value;
+    next = 0;
+}
+
+template <typename T>
+SinglyLinkedList<T>::Node::Node(T &&value)
+{
+    data = value;
+    next = 0;
+}
+
+template <typename T>
+template <typename... Args>
+SinglyLinkedList<T>::Node::Node(Args &&...args) : data(std::forward<Args>(args)...), next(nullptr) {}
 
 template <typename T>
 SinglyLinkedList<T>::SinglyLinkedList()
@@ -80,10 +140,10 @@ SinglyLinkedList<T>::~SinglyLinkedList() {}
 
 // operator overloading
 template <typename T>
-SinglyLinkedList<T>& SinglyLinkedList<T>::operator=(const SinglyLinkedList<T> &other)
+SinglyLinkedList<T> &SinglyLinkedList<T>::operator=(const SinglyLinkedList<T> &other)
 {
     if (other.head == 0)
-        return; // case: other list is empty
+        return *this; // case: other list is empty
 
     head = new Node(other.head->data); // copy first node
     tail = head;
@@ -98,23 +158,57 @@ SinglyLinkedList<T>& SinglyLinkedList<T>::operator=(const SinglyLinkedList<T> &o
     return *this;
 }
 
-template<typename T>
-SinglyLinkedList<T>& SinglyLinkedList<T>::operator=(SinglyLinkedList<T>&& other) noexcept{
+template <typename T>
+SinglyLinkedList<T> &SinglyLinkedList<T>::operator=(SinglyLinkedList<T> &&other) noexcept
+{
     if (other.head == 0)
-        return; // case: other list is empty
+        return *this; // case: other list is empty
 
-    head = new Node(other.head->data); // copy first node
-    tail = head;
-
-    Node *curr = other.head->next;
-    while (curr)
+    if (this != &other) // protect against self-move
     {
-        tail->next = new Node(curr->data); // allocate and copy data
-        tail = tail->next;                 // advance tail
-        curr = curr->next;                 // advance other list
+        clear(); // delete current list
+
+        head = other.head; // steal nodes
+        tail = other.tail;
+
+        other.head = nullptr; // leave other in valid empty state
+        other.tail = nullptr;
     }
     return *this;
 }
 
-template<typename T>
-SinglyLinkedList<T>::Node* SinglyLinkedList<T>::createNode(const T& value){ tail = tail->next = new Node(value); }
+template <typename T>
+SinglyLinkedList<T>::Node *SinglyLinkedList<T>::createNode(const T &value) { return new Node(value); }
+
+template <typename T>
+SinglyLinkedList<T>::Node *SinglyLinkedList<T>::createNode(T &&value) { return new Node(value); }
+
+template <typename T>
+template <typename... Args>
+SinglyLinkedList<T>::Node *SinglyLinkedList<T>::createNode(Args &&...args) { return new Node(value); }
+
+template <typename T>
+void SinglyLinkedList<T>::destroyNode(Node *node)
+{
+    if (head == nullptr)
+        return;
+    if (head == node)
+    {
+        Node *temp = head;
+        head = head->next;
+        delete temp;
+        return;
+    }
+
+    Node *curr = head;
+    while (curr->next && curr->next != node)
+        curr = curr->next;
+    curr->next = node->next;
+
+    if (node->next == node)
+    {
+        node->next = nullptr;
+        tail = (tail == node) ? curr : tail;
+        delete node;
+    }
+}
