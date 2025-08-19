@@ -58,8 +58,8 @@ public:
     const T& operator[](size_t index) const;
     
     // Capacity
-    size_t getSize() const;
-    bool empty() const;
+    size_t getSize() const { return size; }
+    bool empty() const {return size == 0;}
     
     // Modifiers
     void push_front(const T& value);
