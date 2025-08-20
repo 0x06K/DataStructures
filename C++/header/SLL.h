@@ -48,10 +48,10 @@ public:
     SinglyLinkedList& operator=(SinglyLinkedList&& other) noexcept;
     
     // Element access
-    T& front();
-    const T& front() const;
-    T& back();
-    const T& back() const;
+    T& front() {return head->data;}
+    const T& front() const {return head->data;}
+    T& back(){ return tail->data; }
+    const T& back() const { return tail->data; }
     T& at(size_t index);
     const T& at(size_t index) const;
     T& operator[](size_t index);

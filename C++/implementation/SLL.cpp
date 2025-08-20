@@ -242,3 +242,11 @@ void SinglyLinkedList<T>::moveFrom(SinglyLinkedList&& other){
     tail = other.tail;
     other.head = other.tail = nullptr;
 }
+
+template<typename T>
+T& SinglyLinkedList<T>::at(size_t index){
+    Node* current = head;
+    while(index-- && current) current = current->next;
+    if(current) return current->data;
+    throw std::out_of_range("Index out of range");
+}
