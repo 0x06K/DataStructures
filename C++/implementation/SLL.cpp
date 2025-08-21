@@ -245,8 +245,12 @@ void SinglyLinkedList<T>::moveFrom(SinglyLinkedList&& other){
 
 template<typename T>
 T& SinglyLinkedList<T>::at(size_t index){
+    if(index == 0 || index > size){
+        cout << "invalid index. returning tail's data.";
+        return tail->data;
+    }
     Node* current = head;
     while(index-- && current) current = current->next;
     if(current) return current->data;
-    throw std::out_of_range("Index out of range");
+    
 }
