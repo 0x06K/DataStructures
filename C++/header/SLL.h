@@ -20,7 +20,7 @@ private:
     
     Node* head;
     Node* tail;
-    size_t size;
+    size_t size = 0;
     
     // Private helper functions to implement
     Node* createNode(const T& value);
@@ -67,10 +67,10 @@ public:
     template<typename... Args>
     void emplace_front(Args&&... args);
     void pop_front();
-    void push_back(const T& value);
-    void push_back(T&& value);
+    void push_back(const T& value){tail = tail->next = new Node(value);}
+    void push_back(T&& value){tail = tail->next = new Node(value);}
     template<typename... Args>
-    void emplace_back(Args&&... args);
+    void emplace_back(Args&&... args){tail = tail->next = new Nodes(std::forward<Args>(args)...);}
     void pop_back();
     void insert(size_t index, const T& value);
     void insert(size_t index, T&& value);
