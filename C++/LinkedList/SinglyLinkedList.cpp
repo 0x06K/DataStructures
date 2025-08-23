@@ -509,6 +509,7 @@ void SinglyLinkedList<T>::remove(const T& value) {
         Node* prev = head;
         head=head->next;
         delete prev;
+        --size;
         return;
     }
     Node* curr = head->next, prev = head;
@@ -517,6 +518,7 @@ void SinglyLinkedList<T>::remove(const T& value) {
             prev->next = curr->next;
             curr->next = nullptr;
             delete curr;
+            --size;
         }
         prev = curr;
         curr = curr->next;
