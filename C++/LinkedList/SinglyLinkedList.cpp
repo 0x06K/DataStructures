@@ -1,5 +1,5 @@
 #include <iostream>
-#include "C:\Users\blackrose\Desktop\Github\DataStructures\C++\header\SLL.h"
+#include "C:\Users\blackrose\Desktop\Github\DataStructures\C++\header\SinglyLinkedList.h"
 using namespace std;
 
 // iterator
@@ -448,3 +448,150 @@ void SinglyLinkedList<T>::swap(SinglyLinkedList& other) {
     head = other.head; tail = other.tail; size = other.size;
     other.head = temp.head; other.tail = temp.tail; other.size = temp.size;
 }
+
+template<typename T>
+void SinglyLinkedList<T>::reverse(){
+    // using double pointer technique
+    // 2nd method is using recursion
+    Node* curr = head, prev = nullptr;
+    while(curr) {
+        Node* next = curr->next;
+        curr->next = prev;
+        curr = next;
+        prev = curr;
+    }
+}
+
+template<typename T>
+void SinglyLinkedList<T>::sort(){
+    Node* curr = head, next = curr->next;
+    while(curr){
+        while(next) {
+            if(curr->data > next->data) {
+                T tempData = curr->data;
+                curr->data = next->data;
+                next->data = tempData;
+            }
+            next = next->next;
+        }
+        curr=curr->next;
+    }
+}
+
+template<typename T>
+void SinglyLinkedList<T>::merge(SinglyLinkedList<T>& other){
+    tail->next = other.head;
+    tail = other.tail;
+    size += other.size;
+}
+
+template<typename T>
+void SinglyLinkedList<T>::unique(){
+    Node* curr = head, next = curr->next;
+    while(curr){
+        bool unique = true;
+        while(next) {
+            if(curr->data == next->data) {
+                unique = false;
+                break;
+            }
+            next = next->next;
+        }
+        if(unique) cout << curr->data << " ";
+        curr=curr->next;
+    }
+}
+
+template<typename T>
+void SinglyLinkedList<T>::remove(const T& value) {
+    if(head == nullptr) return;
+    if(head->data == value){
+        Node* prev = head;
+        head=head->next;
+        delete prev;
+        return;
+    }
+    Node* curr = head->next, prev = head;
+    while(curr) {
+        if(curr->data == value) {
+            prev->next = curr->next;
+            curr->next = nullptr;
+            delete curr;
+        }
+        prev = curr;
+        curr = curr->next;
+    }
+}
+
+template<typename T>
+bool SinglyLinkedList<T>::contains(const T& value) const {
+    if(head == nullptr) return false;
+    
+    Node* curr = head;   
+    while(curr) {
+        if(curr->data == value) return true;
+        curr = curr->next;
+    }
+    return false;
+}
+
+template<typename T>
+size_t SinglyLinkedList<T>::find(const T& value) const{
+    if(head == nullptr) return static_cast<size_t>(-1);
+    Node* curr = head;   
+    for(int i = 0; curr; i++){
+        if(curr->data == value) return i;
+        curr = curr->next;
+    }
+    return static_cast<size_t>(-1);
+}
+
+template<typename T>
+size_t SinglyLinkedList<T>::findLast(const T& value) const {
+    size_t index = 0;
+    size_t lastFound = static_cast<size_t>(-1); // "not found" marker
+    Node* curr = head;
+
+    while (curr) {
+        if (curr->data == value) {
+            lastFound = index;
+        }
+        curr = curr->next;
+        ++index;
+    }
+
+    return lastFound;
+}
+
+template<typename T>
+size_t SinglyLinkedList<T>::count(const T& value) const {
+    size_t cnt = 0;
+    Node* curr = head;
+
+    while (curr) {
+        if (curr->data == value) {
+            ++cnt;
+        }
+        curr = curr->next;
+    }
+
+    return cnt;
+}
+
+template<typename T>
+bool SinglyLinkedList<T>::equals(const SinglyLinkedList& other) const {
+    Node* curr1 = head;
+    Node* curr2 = other.head;
+
+    while (curr1 && curr2) {
+        if (curr1->data != curr2->data) {
+            return false;
+        }
+        curr1 = curr1->next;
+        curr2 = curr2->next;
+    }
+
+    // both must end at the same time
+    return curr1 == nullptr && curr2 == nullptr;
+}
+

@@ -91,8 +91,6 @@ public:
     void merge(SinglyLinkedList& other);
     void unique();
     void remove(const T& value);
-    template<typename Predicate>
-    void removeIf(Predicate pred);
     
     // Search and comparison
     bool contains(const T& value) const;
@@ -122,10 +120,11 @@ public:
     };
     
     // Iterator functions
-    Iterator begin();
-    Iterator end();
-    const Iterator begin() const;
-    const Iterator end() const;
+    Iterator begin() { return Iterator(head); }
+    Iterator end()   { return Iterator(nullptr); }
+
+    Iterator begin() const { return Iterator(head); }
+    Iterator end()   const { return Iterator(nullptr); }
 };
 
 #endif
