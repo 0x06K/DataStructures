@@ -1,4 +1,5 @@
-;+==================================================================================+
+; progarm for taking input from user(defualt stream for reading input is stdin)
+
 
 .text			; code section whatever is in this section will be executed 
 global _start		; sets _start as the program entry point
