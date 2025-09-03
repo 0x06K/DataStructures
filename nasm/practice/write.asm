@@ -1,5 +1,4 @@
-; Create program with different data sizes (db/dw/dq) and print their values |
-;============================================================================+
+; progarm for printing the text on stdout(defualt stream for printing text on screen)
 
 .text			; code section whatever is in this section will be executed 
 global _start		; sets _start as the program entry point
